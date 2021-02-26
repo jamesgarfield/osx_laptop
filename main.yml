@@ -13,6 +13,8 @@
       - ripgrep
       - s3cmd
       - terraform
+      - watchman
+      - yarn
     brew_casks:
       - adium
       - caffeine
