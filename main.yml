@@ -1,0 +1,123 @@
+---
+- name: laptop setup
+  hosts: localhost
+  become: false
+  vars:
+    brew_packages:
+      - awscli
+      - git
+      - go
+      - jq
+      - libpq
+      - nvm
+      - ripgrep
+      - s3cmd
+      - terraform
+    brew_casks:
+      - adium
+      - caffeine
+      - docker
+      - firefox
+      - fork
+      - gimp
+      - google-chrome
+      - kdiff3
+      - keepassxc
+      - keybase
+      - rectangle
+      - slack
+      - sublime-text
+      - syncthing
+      - visual-studio-code
+      - vlc
+
+  pre_tasks:
+    - name: Ensuring Homebrew Is Installed
+      stat:
+        path: /usr/local/bin/brew
+      register: homebrew_check
+
+    - name: Fail If Homebrew Is Not Installed
+      fail:
+        msg: Homebrew is missing, run bootstrap_tools.sh or install from http://brew.sh/
+      when: not homebrew_check.stat.exists
+
+  tasks:
+    - name: Updating Homebrew
+      homebrew:
+        update_homebrew: true
+      register: result
+      until: result is successful
+      when: homebrew_check.stat.exists
+
+    - name: Upgrading Homebrew Packages
+      homebrew:
+        upgrade_all: true
+      register: result
+      until: result is successful
+      when: homebrew_check.stat.exists
+
+    - name: Installing Homebrew Packages
+      homebrew:
+        name: "{{ brew_packages }}"
+        state: present
+      register: result
+      when: homebrew_check.stat.exists
+
+    - name: Installing Homebrew Casks
+      homebrew_cask:
+        name: "{{ brew_casks }}"
+        state: present
+        accept_external_apps: true
+      register: result
+      until: result is successful
+
+    - name: find psql
+      find:
+        paths: /usr/local/Cellar
+        file_type: file
+        pattern: psql
+        recurse: yes
+      register: psqlpaths
+
+    - name: symlink psql to $PATH
+      file:
+        src: "{{ psqlpaths | json_query('files[*].path') | first }}"
+        dest: /usr/local/bin/psql
+        state: link
+
+    - name: ensure nvm directory is present
+      file:
+        dest: ~/.nvm
+        state: directory
+
+    # bash completions trigger compaudit warnings on OSX
+    # https://stackoverflow.com/questions/13762280/zsh-compinit-insecure-directories
+    # this applies the fix for /usr/local/share/zsh and /usr/local/share/zsh/site-functions
+    - name: check for zsh directory
+      find:
+        paths: /usr/local/share
+        file_type: directory
+        pattern: zsh
+      register: zshdir
+
+    - name: fix zsh directory permissions
+      file:
+        dest: /usr/local/share/zsh
+        state: directory
+        mode: g-x
+      when: zshdir['matched'] == 1
+
+    - name: check for zsh/site-functions directory
+      find:
+        path: /usr/local/share/zsh
+        pattern: site-functions
+        file_type: directory
+      register: sitefunc
+
+    - name: fix zsh/site-functions permissions
+      file:
+        dest: /usr/local/share/zsh/site-functions
+        state: directory
+        mode: g-x
+      when: sitefunc['matched'] == 1
