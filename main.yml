@@ -110,7 +110,7 @@
       file:
         dest: /usr/local/share/zsh
         state: directory
-        mode: g-x
+        mode: g-xw
       when: zshdir['matched'] == 1
 
     - name: check for zsh/site-functions directory
@@ -124,5 +124,5 @@
       file:
         dest: /usr/local/share/zsh/site-functions
         state: directory
-        mode: g-x
+        mode: g-xw
       when: sitefunc['matched'] == 1
