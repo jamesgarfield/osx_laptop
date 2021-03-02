@@ -89,6 +89,9 @@
         dest: /usr/local/bin/psql
         state: link
 
+    - name: start syncthing service
+      command: /usr/local/bin/brew services start syncthing
+
     - name: ensure nvm directory is present
       file:
         dest: ~/.nvm
