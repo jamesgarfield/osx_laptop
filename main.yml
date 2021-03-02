@@ -17,7 +17,6 @@
       - yarn
     brew_casks:
       - adium
-      - caffeine
       - docker
       - firefox
       - flux
