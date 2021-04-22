@@ -21,6 +21,7 @@
       - adium
       - adoptopenjdk/openjdk/adoptopenjdk8
       - android-studio
+      - discord
       - docker
       - firefox
       - flux
