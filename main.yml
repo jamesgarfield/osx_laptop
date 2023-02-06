@@ -26,7 +26,6 @@
       - discord
       - firefox
       - fork
-      - homebrew/cask-fonts
       - gimp
       - google-chrome
       - kdiff3
@@ -41,7 +40,7 @@
   pre_tasks:
     - name: Ensuring Homebrew Is Installed
       stat:
-        path: /usr/local/bin/brew
+        path: /opt/homebrew/bin/brew
       register: homebrew_check
 
     - name: Fail If Homebrew Is Not Installed
@@ -81,7 +80,7 @@
 
     - name: find psql
       find:
-        paths: /usr/local/Cellar
+        paths: /opt/homebrew/Cellar/
         file_type: file
         pattern: psql
         recurse: yes
@@ -94,7 +93,7 @@
         state: link
 
     - name: start syncthing service
-      command: /usr/local/bin/brew services start syncthing
+      command: /opt/homebrew/bin/brew services start syncthing
 
     - name: ensure nvm directory is present
       file:
