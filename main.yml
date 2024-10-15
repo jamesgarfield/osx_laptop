@@ -85,6 +85,14 @@
         pattern: psql
         recurse: yes
       register: psqlpaths
+    
+    - name: find pg_dump
+      find:
+        paths: /opt/homebrew/Cellar/
+        file_type: file
+        pattern: pg_dump
+        recurse: yes
+      register: pgdumppaths
 
     - name: symlink psql to $PATH
       file:
@@ -92,8 +100,14 @@
         dest: /usr/local/bin/psql
         state: link
 
-    - name: start syncthing service
-      command: /opt/homebrew/bin/brew services start syncthing
+    - name: symlink pg_dump to $PATH
+      file:
+        src: "{{ pgdumppaths | json_query('files[*].path') | first }}"
+        dest: /usr/local/bin/pg_dump
+        state: link
+
+    #- name: start syncthing service
+    #  command: /opt/homebrew/bin/brew services start syncthing
 
     - name: ensure nvm directory is present
       file:
