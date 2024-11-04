@@ -11,18 +11,11 @@
       - jq
       - libpq
       - nvm
-      - rbenv
       - ripgrep
       - s3cmd
       - terraform
-      - trash
-      - watchman
-      - yarn
     brew_casks:
-      - adium
-      - adoptopenjdk/openjdk/adoptopenjdk8
       - amethyst
-      - android-studio
       - discord
       - firefox
       - fork
