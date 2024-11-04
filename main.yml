@@ -74,7 +74,7 @@
 
     - name: find psql
       find:
-        paths: /opt/homebrew/Cellar/
+        paths: /opt/homebrew/opt/libpq/
         file_type: file
         pattern: psql
         recurse: yes
@@ -82,7 +82,7 @@
     
     - name: find pg_dump
       find:
-        paths: /opt/homebrew/Cellar/
+        paths: /opt/homebrew/opt/libpq/
         file_type: file
         pattern: pg_dump
         recurse: yes
